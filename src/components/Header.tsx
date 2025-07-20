@@ -1,29 +1,27 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 
 const HeaderBar = styled.header`
-  width: 100%;
-  background: #fff;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 40px;
-  height: 72px;
-  box-sizing: border-box;
-  border-bottom: 1.5px solid #f3e6f7;
+  padding: 20px 40px;
+  background: #fff;
+  border-bottom: 1px solid #f0f0f0;
   position: relative;
   z-index: 9999;
 `;
 const Logo = styled.div`
-  display: flex;
-  align-items: center;
-  font-family: 'Playfair Display', serif;
   font-size: 2rem;
   font-weight: 700;
-  color: #d16ba5;
-  letter-spacing: 2px;
+  color: #ff6b9d;
   cursor: pointer;
-  gap: 12px;
+  transition: color 0.3s ease;
+  
+  &:hover {
+    color: #ff4d8d;
+  }
 `;
 const LogoFlower = styled.span`
   font-size: 2.1rem;
@@ -139,9 +137,34 @@ const MenuItem = styled.a`
   &:hover { color: #d16ba5; }
 `;
 
+const UserInfo = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #d16ba5;
+  font-weight: 600;
+`;
+
+const LogoutButton = styled.button`
+  background: none;
+  border: none;
+  color: #888;
+  cursor: pointer;
+  font-size: 0.9rem;
+  text-decoration: underline;
+  
+  &:hover {
+    color: #d16ba5;
+  }
+`;
+
 const Header: React.FC = () => {
   const [searchBarValue, setSearchBarValue] = useState('');
   const [searchBarFocus, setSearchBarFocus] = useState(false);
+  const [user, setUser] = useState<any>(null);
+  const [cartItemCount, setCartItemCount] = useState(0);
+  const navigate = useNavigate();
+  
   const recentKeywords: string[] = [];
   const trendingKeywords = [
     { word: '핑크쿠션', up: true },
@@ -155,58 +178,87 @@ const Header: React.FC = () => {
     { word: '캔들', up: true },
     { word: '쿠션', new: true },
   ];
+
+  const handleLoginSuccess = (userData: any) => {
+    setUser(userData);
+  };
+
+  const handleLogout = () => {
+    setUser(null);
+  };
+
   return (
-    <HeaderBar>
-      <Logo>
-        <LogoFlower>🌸</LogoFlower>
-        SWEETPEA
-      </Logo>
-      <SearchBarWrap>
-        <SearchBar
-          placeholder="마봉이, 뽕양이, 봉봉이, 봉봉이네 검색"
-          value={searchBarValue}
-          onChange={e => setSearchBarValue(e.target.value)}
-          onFocus={() => setSearchBarFocus(true)}
-          onBlur={() => setTimeout(()=>setSearchBarFocus(false), 150)}
-        />
-        <SearchIcon>🔍</SearchIcon>
-        {searchBarFocus && (
-          <SearchDropdown>
-            <SearchCol>
-              <SearchColTitle>최근 검색어</SearchColTitle>
-              {recentKeywords.length === 0 ? (
-                <SearchEmpty>최근 검색어가 없어요.</SearchEmpty>
-              ) : (
+    <>
+      <HeaderBar>
+        <Logo onClick={() => navigate('/')}>
+          <LogoFlower>🌸</LogoFlower>
+          SWEETPEA
+        </Logo>
+        <SearchBarWrap>
+          <SearchBar
+            placeholder="마봉이, 뽕양이, 봉봉이, 봉봉이네 검색"
+            value={searchBarValue}
+            onChange={e => setSearchBarValue(e.target.value)}
+            onFocus={() => setSearchBarFocus(true)}
+            onBlur={() => setTimeout(()=>setSearchBarFocus(false), 150)}
+          />
+          <SearchIcon>🔍</SearchIcon>
+          {searchBarFocus && (
+            <SearchDropdown>
+              <SearchCol>
+                <SearchColTitle>최근 검색어</SearchColTitle>
+                {recentKeywords.length === 0 ? (
+                  <SearchEmpty>최근 검색어가 없어요.</SearchEmpty>
+                ) : (
+                  <SearchList>
+                    {recentKeywords.map((k, i) => (
+                      <SearchListItem key={i}>{k}</SearchListItem>
+                    ))}
+                  </SearchList>
+                )}
+              </SearchCol>
+              <SearchCol>
+                <SearchColTitle>급상승 검색어</SearchColTitle>
                 <SearchList>
-                  {recentKeywords.map((k, i) => (
-                    <SearchListItem key={i}>{k}</SearchListItem>
+                  {trendingKeywords.map((k, i) => (
+                    <SearchListItem key={i}>
+                      <SearchRank>{i+1}</SearchRank>
+                      {k.word}
+                      {k.new && <SearchNew>NEW</SearchNew>}
+                      {k.up && <SearchUp>▲</SearchUp>}
+                    </SearchListItem>
                   ))}
                 </SearchList>
-              )}
-            </SearchCol>
-            <SearchCol>
-              <SearchColTitle>급상승 검색어</SearchColTitle>
-              <SearchList>
-                {trendingKeywords.map((k, i) => (
-                  <SearchListItem key={i}>
-                    <SearchRank>{i+1}</SearchRank>
-                    {k.word}
-                    {k.new && <SearchNew>NEW</SearchNew>}
-                    {k.up && <SearchUp>▲</SearchUp>}
-                  </SearchListItem>
-                ))}
-              </SearchList>
-            </SearchCol>
-          </SearchDropdown>
-        )}
-      </SearchBarWrap>
-      <Menu>
-        <MenuItem>회원가입</MenuItem>
-        <MenuItem>로그인</MenuItem>
-        <MenuItem>장바구니</MenuItem>
-        <MenuItem>고객센터</MenuItem>
-      </Menu>
-    </HeaderBar>
+              </SearchCol>
+            </SearchDropdown>
+          )}
+        </SearchBarWrap>
+        <Menu>
+          {user ? (
+            <>
+              <UserInfo>
+                안녕하세요, {user.full_name || user.username}님! 🌸
+              </UserInfo>
+              <LogoutButton onClick={handleLogout}>
+                로그아웃
+              </LogoutButton>
+            </>
+          ) : (
+            <>
+              <MenuItem onClick={() => navigate('/register')}>회원가입</MenuItem>
+              <MenuItem onClick={() => navigate('/login')}>로그인</MenuItem>
+            </>
+          )}
+          <MenuItem onClick={() => navigate('/cart')}>
+            장바구니 ({cartItemCount})
+          </MenuItem>
+          <MenuItem onClick={() => navigate('/customer-service')}>
+            고객센터
+          </MenuItem>
+        </Menu>
+      </HeaderBar>
+      
+    </>
   );
 };
 

@@ -1,89 +1,116 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { FaShoppingCart, FaHeart } from 'react-icons/fa';
+import { FaShoppingCart, FaHeart, FaStar, FaEye } from 'react-icons/fa';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
-const ProductsSection = styled.section`
-  padding: 80px 20px;
-`;
-
-const Container = styled.div`
+const ProductsContainer = styled.div`
+  padding: 40px 20px;
   max-width: 1200px;
   margin: 0 auto;
-`;
-
-const SectionTitle = styled.h2`
-  text-align: center;
-  font-size: 2.5rem;
-  font-weight: bold;
-  color: #333;
-  margin-bottom: 60px;
-  
-  @media (max-width: 768px) {
-    font-size: 2rem;
-  }
 `;
 
 const ProductsGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 30px;
+  margin-top: 30px;
 `;
 
 const ProductCard = styled.div`
   background: white;
   border-radius: 20px;
   overflow: hidden;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  transition: all 0.3s;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  position: relative;
   
   &:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    transform: translateY(-8px);
+    box-shadow: 0 15px 35px rgba(221, 160, 221, 0.15);
   }
 `;
 
 const ProductImage = styled.div`
-  height: 200px;
-  background: linear-gradient(135deg, #ff6b9d 0%, #ff8fab 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-size: 3rem;
   position: relative;
+  height: 250px;
+  overflow: hidden;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+  
+  ${ProductCard}:hover & img {
+    transform: scale(1.05);
+  }
 `;
 
-const WishlistButton = styled.button`
+const ProductBadge = styled.div<{ type: 'new' | 'trending' }>`
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  background: ${props => props.type === 'new' ? '#ff6b9d' : '#dda0dd'};
+  color: white;
+  padding: 6px 12px;
+  border-radius: 15px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  z-index: 2;
+`;
+
+const ProductActions = styled.div`
   position: absolute;
   top: 15px;
   right: 15px;
-  background: rgba(255, 255, 255, 0.9);
-  border: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  opacity: 0;
+  transform: translateX(10px);
+  transition: all 0.3s ease;
+  
+  ${ProductCard}:hover & {
+    opacity: 1;
+    transform: translateX(0);
+  }
+`;
+
+const ActionButton = styled.button`
+  width: 35px;
+  height: 35px;
   border-radius: 50%;
-  width: 40px;
-  height: 40px;
+  border: none;
+  background: white;
+  color: #666;
+  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
-  transition: all 0.3s;
-  color: #ff6b9d;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
   
   &:hover {
-    background: white;
+    background: #ff6b9d;
+    color: white;
     transform: scale(1.1);
   }
 `;
 
 const ProductInfo = styled.div`
-  padding: 25px;
+  padding: 20px;
 `;
 
-const ProductTitle = styled.h3`
-  font-size: 1.2rem;
-  font-weight: bold;
+const ProductName = styled.h3`
+  font-size: 1.1rem;
+  font-weight: 600;
   color: #333;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
+  line-height: 1.4;
 `;
 
 const ProductDescription = styled.p`
@@ -91,123 +118,174 @@ const ProductDescription = styled.p`
   font-size: 0.9rem;
   line-height: 1.5;
   margin-bottom: 15px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 `;
 
 const ProductPrice = styled.div`
   font-size: 1.3rem;
-  font-weight: bold;
+  font-weight: 700;
   color: #ff6b9d;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
 `;
 
 const AddToCartButton = styled.button`
   width: 100%;
-  background: #ff6b9d;
+  padding: 12px;
+  background: linear-gradient(135deg, #ff6b9d 0%, #ff4d8d 100%);
   color: white;
   border: none;
-  padding: 12px;
-  border-radius: 10px;
-  font-weight: bold;
+  border-radius: 12px;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: all 0.3s ease;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
   
   &:hover {
-    background: #ff4d8d;
+    background: linear-gradient(135deg, #ff4d8d 0%, #ff2d7d 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 107, 157, 0.3);
   }
   
   &:disabled {
     background: #ccc;
     cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
   }
 `;
 
-const products = [
-  {
-    id: 1,
-    title: '로즈골드 머그컵',
-    description: '아름다운 로즈골드 머그컵으로 따뜻한 아침을 시작하세요',
-    price: '₩15,000',
-    emoji: '☕',
-  },
-  {
-    id: 2,
-    title: '세라믹 그릇 세트',
-    description: '일상의 식사를 더욱 특별하게 만드는 아름다운 그릇 세트',
-    price: '₩45,000',
-    emoji: '🍽️',
-  },
-  {
-    id: 3,
-    title: '유리 와인잔',
-    description: '투명하고 깔끔한 유리잔으로 와인을 더욱 맛있게',
-    price: '₩25,000',
-    emoji: '🍷',
-  },
-  {
-    id: 4,
-    title: '도자기 접시 세트',
-    description: '전통과 현대가 조화를 이룬 아름다운 접시 세트',
-    price: '₩35,000',
-    emoji: '🥘',
-  },
-  {
-    id: 5,
-    title: '스테인리스 수저 세트',
-    description: '깔끔하고 내구성이 좋은 스테인리스 수저 세트',
-    price: '₩18,000',
-    emoji: '🍴',
-  },
-  {
-    id: 6,
-    title: '선물용 커피잔 세트',
-    description: '소중한 사람에게 전하는 특별한 커피잔 선물세트',
-    price: '₩55,000',
-    emoji: '🎁',
-  },
-];
+const ViewDetailsButton = styled.button`
+  width: 100%;
+  padding: 10px;
+  background: transparent;
+  color: #ff6b9d;
+  border: 2px solid #ff6b9d;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 8px;
+  
+  &:hover {
+    background: #ff6b9d;
+    color: white;
+  }
+`;
+
+interface Product {
+  id: number;
+  name: string;
+  description: string;
+  price: number;
+  category: string;
+  image_url: string;
+  stock: number;
+  is_new: boolean;
+  is_trending: boolean;
+}
 
 const Products: React.FC = () => {
-  const [cartItems, setCartItems] = useState<number[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [addingToCart, setAddingToCart] = useState<number | null>(null);
+  const navigate = useNavigate();
 
-  const addToCart = (productId: number) => {
-    setCartItems(prev => [...prev, productId]);
-    alert('장바구니에 추가되었습니다! 🛒');
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  const fetchProducts = async () => {
+    try {
+      const response = await axios.get('http://localhost:5000/api/products');
+      setProducts(response.data);
+    } catch (error) {
+      console.error('상품을 불러오는데 실패했습니다:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
+  const addToCart = async (productId: number) => {
+    setAddingToCart(productId);
+    try {
+      await axios.post('http://localhost:5000/api/cart', {
+        product_id: productId,
+        quantity: 1
+      });
+      alert('장바구니에 추가되었습니다! 🌸');
+    } catch (error) {
+      console.error('장바구니 추가 실패:', error);
+      alert('장바구니 추가에 실패했습니다.');
+    } finally {
+      setAddingToCart(null);
+    }
+  };
+
+  const handleProductClick = (productId: number) => {
+    navigate(`/product/${productId}`);
+  };
+
+  if (loading) {
+    return (
+      <ProductsContainer>
+        <div style={{ textAlign: 'center', padding: '50px' }}>
+          <div style={{ fontSize: '1.2rem', color: '#666' }}>상품을 불러오는 중... 🌸</div>
+        </div>
+      </ProductsContainer>
+    );
+  }
+
   return (
-    <ProductsSection id="products">
-      <Container>
-        <SectionTitle>인기 상품</SectionTitle>
-        <ProductsGrid>
-          {products.map((product) => (
-            <ProductCard key={product.id}>
-              <ProductImage>
-                <span>{product.emoji}</span>
-                <WishlistButton>
+    <ProductsContainer>
+      <ProductsGrid>
+        {products.map((product) => (
+          <ProductCard key={product.id}>
+            <ProductImage onClick={() => handleProductClick(product.id)}>
+              <img src={product.image_url} alt={product.name} />
+              {product.is_new && <ProductBadge type="new">NEW</ProductBadge>}
+              {product.is_trending && <ProductBadge type="trending">TRENDING</ProductBadge>}
+              <ProductActions>
+                <ActionButton>
                   <FaHeart />
-                </WishlistButton>
-              </ProductImage>
-              <ProductInfo>
-                <ProductTitle>{product.title}</ProductTitle>
-                <ProductDescription>{product.description}</ProductDescription>
-                <ProductPrice>{product.price}</ProductPrice>
-                <AddToCartButton 
-                  onClick={() => addToCart(product.id)}
-                  disabled={cartItems.includes(product.id)}
-                >
-                  <FaShoppingCart />
-                  {cartItems.includes(product.id) ? '추가됨' : '장바구니 추가'}
-                </AddToCartButton>
-              </ProductInfo>
-            </ProductCard>
-          ))}
-        </ProductsGrid>
-      </Container>
-    </ProductsSection>
+                </ActionButton>
+                <ActionButton>
+                  <FaEye />
+                </ActionButton>
+              </ProductActions>
+            </ProductImage>
+            <ProductInfo>
+              <ProductName onClick={() => handleProductClick(product.id)}>
+                {product.name}
+              </ProductName>
+              <ProductDescription>{product.description}</ProductDescription>
+              <ProductPrice>₩{product.price.toLocaleString()}</ProductPrice>
+              <AddToCartButton
+                onClick={() => addToCart(product.id)}
+                disabled={addingToCart === product.id}
+              >
+                {addingToCart === product.id ? (
+                  '추가 중...'
+                ) : (
+                  <>
+                    <FaShoppingCart />
+                    장바구니에 추가
+                  </>
+                )}
+              </AddToCartButton>
+              <ViewDetailsButton onClick={() => handleProductClick(product.id)}>
+                상세보기
+              </ViewDetailsButton>
+            </ProductInfo>
+          </ProductCard>
+        ))}
+      </ProductsGrid>
+    </ProductsContainer>
   );
 };
 

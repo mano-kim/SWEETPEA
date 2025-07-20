@@ -1,172 +1,176 @@
-# 봉봉이네 잡화점 🧸✨
+# 🌸 SWEETPEA - 라이프스타일 커머스
 
-**올리브영 스타일**의 예쁜 그릇과 컵을 판매하는 React + Python 쇼핑몰입니다.
+아름답고 감성적인 리빙 소품들을 만나보세요. 스위트피처럼 달콤하고 우아한 일상의 아름다움을 선물합니다.
 
-## 🎯 프로젝트 구조
+## 🚀 주요 기능
+
+### 🛍️ 쇼핑 기능
+- **상품 목록**: 신상품, 베스트 상품 카테고리별 분류
+- **상품 상세**: 상품 정보, 가격, 장바구니 추가
+- **장바구니**: 상품 추가/삭제, 수량 관리
+- **트렌딩 아이템**: 실시간 인기 상품 추천
+
+### 👤 사용자 관리
+- **회원가입**: 실시간 주소 검증, 기본 배송지 설정
+- **로그인/로그아웃**: 안전한 인증 시스템
+- **사용자 정보**: 개인정보 관리
+
+### 🎨 UI/UX
+- **반응형 디자인**: 모바일, 태블릿, 데스크톱 최적화
+- **아름다운 애니메이션**: 부드러운 전환 효과
+- **직관적인 네비게이션**: 쉬운 사용자 경험
+
+### 🎯 고객 서비스
+- **고객센터**: FAQ, 문의하기, 공지사항
+- **탭 네비게이션**: 카테고리별 정보 분류
+- **실시간 채팅**: 고객 지원
+
+## 🛠️ 기술 스택
+
+### Frontend
+- **React 18** - 최신 React 기능 활용
+- **TypeScript** - 타입 안정성
+- **Styled Components** - CSS-in-JS 스타일링
+- **React Router** - SPA 라우팅
+- **FontAwesome** - 아이콘 라이브러리
+
+### Backend
+- **Python Flask** - RESTful API 서버
+- **SQLite** - 데이터베이스
+- **SQLAlchemy** - ORM
+- **Flask-CORS** - 크로스 오리진 지원
+
+## �� 프로젝트 구조
 
 ```
-bongbong-react-app/
-├── src/                    # React 프론트엔드
-│   ├── components/         # React 컴포넌트들
-│   ├── App.tsx            # 메인 앱 컴포넌트
-│   └── index.tsx          # 앱 진입점
-├── backend/               # Python 백엔드
-│   ├── app.py             # Flask API 서버
-│   └── requirements.txt   # Python 의존성
-├── package.json           # React 의존성
-└── README.md             # 프로젝트 설명서
+SWEETPEA/
+├── src/
+│   ├── components/          # React 컴포넌트
+│   │   ├── Header.tsx      # 네비게이션 헤더
+│   │   ├── Hero.tsx        # 메인 비주얼
+│   │   ├── Products.tsx    # 상품 목록
+│   │   ├── ProductDetail.tsx # 상품 상세
+│   │   ├── Cart.tsx        # 장바구니
+│   │   ├── RegisterPage.tsx # 회원가입
+│   │   ├── LoginPage.tsx   # 로그인
+│   │   ├── CustomerService.tsx # 고객센터
+│   │   └── ...
+│   ├── App.tsx             # 메인 앱 컴포넌트
+│   └── index.tsx           # 진입점
+├── backend/                # Flask 백엔드
+│   ├── app.py             # 메인 서버 파일
+│   ├── init_db.py         # 데이터베이스 초기화
+│   └── database.db        # SQLite 데이터베이스
+└── public/                # 정적 파일
 ```
 
-## 🚀 시작하기
+## 🚀 설치 및 실행
 
-### 1. 프론트엔드 (React) 설정
+### 1. 저장소 클론
+```bash
+git clone https://github.com/your-username/sweetpea.git
+cd sweetpea
+```
 
+### 2. Frontend 설정
 ```bash
 # 의존성 설치
 npm install
 
-# 개발 서버 실행 (포트 3000)
+# 개발 서버 실행
 npm start
 ```
 
-### 2. 백엔드 (Python Flask) 설정
-
+### 3. Backend 설정
 ```bash
-# backend 디렉토리로 이동
 cd backend
 
-# Python 가상환경 생성 (선택사항)
-python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
+# Python 의존성 설치
+pip install flask flask-cors flask-sqlalchemy
 
-# 의존성 설치
-pip install -r requirements.txt
-
-# Flask 서버 실행 (포트 5000)
+# 서버 실행
 python app.py
 ```
 
-## 🌟 주요 기능
+### 4. 접속
+- **Frontend**: http://localhost:3000
+- **Backend API**: http://localhost:5000
 
-### 🛍️ 쇼핑몰 기능
-- **상품 목록**: 카테고리별 상품 조회
-- **상품 상세**: 개별 상품 정보 확인
-- **장바구니**: 상품 추가/삭제/수량 관리
-- **검색**: 상품명으로 검색
+## 🌟 주요 페이지
 
-### 🎨 디자인 특징
-- **올리브영 스타일**: 깔끔하고 모던한 UI
-- **반응형 디자인**: 모바일/태블릿/데스크톱 지원
-- **애니메이션**: 부드러운 호버 효과
-- **색상 팔레트**: 핑크/빨강 계열의 따뜻한 색상
+### 🏠 홈페이지
+- 아름다운 히어로 섹션
+- 신상품 및 베스트 상품 그리드
+- 트렌딩 아이템 추천
+- 이벤트 배너
 
-### 🔧 기술 스택
-- **Frontend**: React 18, TypeScript, Styled Components
-- **Backend**: Python Flask, SQLite
-- **API**: RESTful API
-- **스타일링**: CSS-in-JS (Styled Components)
+### 🛍️ 상품 페이지
+- 카테고리별 상품 분류
+- 상품 검색 기능
+- 상품 상세 정보
+- 장바구니 추가
 
-## 📱 화면 구성
+### 👤 사용자 페이지
+- 회원가입 (실시간 주소 검증)
+- 로그인/로그아웃
+- 개인정보 관리
 
-### 1. 헤더
-- 로고 및 네비게이션
-- 검색 기능
-- 장바구니 (아이템 수 표시)
-- 모바일 햄버거 메뉴
+### 🎯 고객센터
+- FAQ (자주 묻는 질문)
+- 문의하기
+- 공지사항
+- 탭 네비게이션
 
-### 2. 히어로 섹션
-- 메인 타이틀 및 설명
-- CTA 버튼
-- 그라데이션 배경
+## 🎨 디자인 특징
 
-### 3. 카테고리
-- 그릇, 접시, 컵/잔, 수저, 액세서리
-- 카드형 레이아웃
-- 호버 애니메이션
+### 컬러 팔레트
+- **Primary**: #ff6b9d (핑크)
+- **Secondary**: #dda0dd (라벤더)
+- **Background**: #fff5f7 (연한 핑크)
+- **Text**: #333 (다크 그레이)
 
-### 4. 상품 목록
-- 그리드 레이아웃
-- 상품 카드 (이미지, 이름, 가격, 설명)
-- 장바구니 추가 버튼
+### UI 컴포넌트
+- **그라데이션 배경**: 부드러운 색상 전환
+- **카드 디자인**: 그림자와 호버 효과
+- **버튼**: 그라데이션과 애니메이션
+- **모달**: 깔끔한 팝업 인터페이스
 
-### 5. 특징 섹션
-- 배송, 품질, 고객서비스
-- 아이콘과 설명
+## 🔧 개발 환경
 
-### 6. 연락처
-- 문의 폼
-- 이메일 입력 (도메인 선택)
+### 요구사항
+- Node.js 16+
+- Python 3.8+
+- npm 또는 yarn
 
-### 7. 푸터
-- 회사 정보
-- 링크들
-- 카피라이트
+### 개발 도구
+- **VS Code** - 코드 에디터
+- **React Developer Tools** - React 디버깅
+- **Postman** - API 테스트
 
-## 🗄️ 데이터베이스
+## 📝 API 문서
 
-### 상품 테이블 (products)
-- id: 상품 고유 ID
-- name: 상품명
-- description: 상품 설명
-- price: 가격
-- category: 카테고리
-- image_url: 이미지 URL
-- stock: 재고 수량
-- created_at: 생성일
+### 인증 API
+- `POST /api/register` - 회원가입
+- `POST /api/login` - 로그인
 
-### 장바구니 테이블 (cart)
-- id: 장바구니 아이템 ID
-- product_id: 상품 ID (외래키)
-- quantity: 수량
-- created_at: 추가일
+### 상품 API
+- `GET /api/products` - 상품 목록
+- `GET /api/products/:id` - 상품 상세
 
-## 🔌 API 엔드포인트
-
-### 상품 관련
-- `GET /api/products` - 전체 상품 목록
-- `GET /api/products?category=bowls` - 카테고리별 상품
-- `GET /api/products/{id}` - 개별 상품 정보
-
-### 장바구니 관련
-- `GET /api/cart` - 장바구니 목록
-- `POST /api/cart` - 장바구니에 상품 추가
-- `DELETE /api/cart/{id}` - 장바구니에서 상품 삭제
-
-### 기타
-- `GET /api/categories` - 카테고리 목록
-- `POST /api/contact` - 문의 폼 제출
-
-## 🎨 스타일 가이드
-
-### 색상 팔레트
-- **Primary**: #ff6b6b (핑크)
-- **Secondary**: #ff9a9e (연한 핑크)
-- **Background**: #ffffff (화이트)
-- **Text**: #1a1a1a (다크 그레이)
-- **Border**: #f0f0f0 (연한 그레이)
-
-### 타이포그래피
-- **Font**: Noto Sans KR
-- **Weights**: 300, 400, 500, 700
-
-### 컴포넌트 스타일
-- **Border Radius**: 12px (카드), 25px (버튼)
-- **Shadow**: 0 4px 20px rgba(0, 0, 0, 0.08)
-- **Transition**: 0.3s ease
+### 장바구니 API
+- `GET /api/cart` - 장바구니 조회
+- `POST /api/cart` - 장바구니 추가
 
 ## 🚀 배포
 
-### Vercel 배포 (프론트엔드)
-```bash
-npm run build
-# Vercel CLI로 배포
-```
+### Vercel 배포
+1. GitHub 저장소 연결
+2. Vercel 프로젝트 생성
+3. 자동 배포 설정
 
-### Heroku 배포 (백엔드)
-```bash
-# Procfile 생성
-echo "web: python app.py" > Procfile
-# Heroku CLI로 배포
+### 환경 변수
+```env
+REACT_APP_API_URL=http://localhost:5000
 ```
 
 ## 🤝 기여하기
@@ -179,12 +183,20 @@ echo "web: python app.py" > Procfile
 
 ## 📄 라이선스
 
-이 프로젝트는 MIT 라이선스 하에 배포됩니다.
+이 프로젝트는 MIT 라이선스 하에 배포됩니다. 자세한 내용은 `LICENSE` 파일을 참조하세요.
+
+## 👥 팀
+
+- **개발자**: [Your Name]
+- **디자이너**: [Designer Name]
+- **기획자**: [Planner Name]
 
 ## 📞 연락처
 
-프로젝트 링크: [https://github.com/your-username/bongbong-store](https://github.com/your-username/bongbong-store)
+- **이메일**: info@sweetpea.com
+- **전화**: 1588-1234
+- **운영시간**: 평일 09:00-18:00
 
 ---
 
-**봉봉이네 잡화점**에서 예쁜 그릇과 컵을 만나보세요! 🧸✨ 
+🌸 **SWEETPEA** - 일상의 소소한 순간들을 특별하게 만들어드리는 라이프스타일 브랜드 🌸 

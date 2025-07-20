@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { FaSearch, FaShoppingCart, FaUser, FaLeaf, FaBars, FaTimes, FaSeedling } from 'react-icons/fa';
+import { FaUser } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 
 const MainContainer = styled.div`
@@ -8,353 +8,15 @@ const MainContainer = styled.div`
   min-height: 100vh;
 `;
 
-// Top Bar
-const TopBar = styled.div`
-  background: #F8F8F8;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 40px;
-  font-size: 12px;
-  color: #666;
-  border-bottom: 1px solid #E8E8E8;
-  
-  @media (max-width: 768px) {
-    padding: 0 20px;
-  }
-`;
-
-const TopBarLeft = styled.div`
-  display: flex;
-  gap: 20px;
-  
-  @media (max-width: 768px) {
-    gap: 15px;
-    font-size: 11px;
-  }
-  
-  a {
-    color: #666;
-    text-decoration: none;
-    transition: color 0.3s;
-    cursor: pointer;
-    
-    &:hover {
-      color: #333;
-    }
-  }
-`;
-
-const TopBarRight = styled.div`
-  a {
-    color: #666;
-    text-decoration: none;
-    transition: color 0.3s;
-    cursor: pointer;
-    
-    &:hover {
-      color: #333;
-    }
-  }
-`;
-
-// Navigation
-const Navigation = styled.nav`
-  width: 100%;
-  background: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0 40px;
-  height: 72px;
-  box-sizing: border-box;
-  border-bottom: 1.5px solid #f3e6f7;
-  position: relative;
-  z-index: 200;
-`;
-
-const NavLinks = styled.div`
-  display: flex;
-  gap: 40px;
-  align-items: center;
-  
-  @media (max-width: 768px) {
-    display: none;
-  }
-`;
-
-const NavLink = styled.a`
-  color: #666;
-  text-decoration: none;
-  font-size: 14px;
-  font-weight: 300;
-  letter-spacing: 1px;
-  transition: color 0.3s;
-  cursor: pointer;
-  
-  &:hover {
-    color: #333;
-  }
-`;
-
-const NavIcon = styled.div`
-  color: #666;
-  font-size: 16px;
-  cursor: pointer;
-  transition: color 0.3s;
-  
-  &:hover {
-    color: #333;
-  }
-`;
-
-const BrandIcon = styled.div`
-  position: absolute;
-  left: 50%;
-  top: -10px;
-  transform: translateX(-50%);
-  color: #2E7D32;
-  font-size: 30px;
-  filter: drop-shadow(0 2px 4px rgba(46, 125, 50, 0.3));
-  transition: all 0.3s ease;
-  background: linear-gradient(135deg, #4CAF50, #2E7D32);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  border-radius: 50%;
-  padding: 8px;
-  background: radial-gradient(circle, rgba(76, 175, 80, 0.1) 0%, transparent 70%);
-  
-  &:hover {
-    transform: translateX(-50%) scale(1.1);
-    filter: drop-shadow(0 4px 8px rgba(46, 125, 50, 0.4));
-    background: radial-gradient(circle, rgba(76, 175, 80, 0.2) 0%, transparent 70%);
-  }
-  
-  @media (max-width: 768px) {
-    display: none;
-  }
-`;
-
-const MobileMenuButton = styled.button`
-  display: none;
-  background: none;
-  border: none;
-  color: #333;
-  font-size: 20px;
-  cursor: pointer;
-  
-  @media (max-width: 768px) {
-    display: block;
-  }
-`;
-
-const MobileMenu = styled.div<{ isOpen: boolean }>`
-  display: none;
-  
-  @media (max-width: 768px) {
-    display: ${props => props.isOpen ? 'block' : 'none'};
-    position: fixed;
-    top: 120px;
-    left: 0;
-    right: 0;
-    background: white;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    z-index: 1000;
-    border-top: 1px solid #F0F0F0;
-  }
-`;
-
-const MobileNavLinks = styled.div`
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-`;
-
-const MobileNavLink = styled.a`
-  color: #333;
-  text-decoration: none;
-  font-size: 16px;
-  font-weight: 300;
-  padding: 10px 0;
-  border-bottom: 1px solid #F0F0F0;
-  transition: color 0.3s;
-  
-  &:hover {
-    color: #666;
-  }
-`;
-
-// Search Modal
-const SearchModal = styled.div<{ isOpen: boolean }>`
-  display: ${props => props.isOpen ? 'flex' : 'none'};
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  z-index: 2000;
-  align-items: center;
-  justify-content: center;
-`;
-
-const SearchModalContent = styled.div`
-  background: white;
-  padding: 40px;
-  border-radius: 10px;
-  width: 90%;
-  max-width: 500px;
-  position: relative;
-`;
-
-const SearchModalClose = styled.button`
-  position: absolute;
-  top: 15px;
-  right: 20px;
-  background: none;
-  border: none;
-  font-size: 24px;
-  color: #666;
-  cursor: pointer;
-  
-  &:hover {
-    color: #333;
-  }
-`;
-
-const SearchInput = styled.input`
-  width: 100%;
-  padding: 15px;
-  border: 1px solid #E8E8E8;
-  border-radius: 5px;
-  font-size: 16px;
-  outline: none;
-  
-  &:focus {
-    border-color: #333;
-  }
-`;
-
-// Cart Modal
-const CartModal = styled.div<{ isOpen: boolean }>`
-  display: ${props => props.isOpen ? 'flex' : 'none'};
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  z-index: 2000;
-  align-items: center;
-  justify-content: center;
-`;
-
-const CartModalContent = styled.div`
-  background: white;
-  padding: 40px;
-  border-radius: 10px;
-  width: 90%;
-  max-width: 400px;
-  position: relative;
-`;
-
-const CartModalClose = styled.button`
-  position: absolute;
-  top: 15px;
-  right: 20px;
-  background: none;
-  border: none;
-  font-size: 24px;
-  color: #666;
-  cursor: pointer;
-  
-  &:hover {
-    color: #333;
-  }
-`;
-
-const CartItem = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  padding: 15px 0;
-  border-bottom: 1px solid #F0F0F0;
-`;
-
-const CartItemImage = styled.div`
-  width: 60px;
-  height: 60px;
-  background: #F8F8F8;
-  border-radius: 5px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #999;
-`;
-
-const CartItemInfo = styled.div`
-  flex: 1;
-  
-  h4 {
-    margin: 0 0 5px 0;
-    font-size: 14px;
-    color: #333;
-  }
-  
-  p {
-    margin: 0;
-    font-size: 12px;
-    color: #666;
-  }
-`;
-
-const CartTotal = styled.div`
-  margin-top: 20px;
-  padding-top: 20px;
-  border-top: 1px solid #F0F0F0;
-  text-align: center;
-  
-  h3 {
-    margin: 0 0 10px 0;
-    color: #333;
-  }
-  
-  button {
-    background: #333;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background 0.3s;
-    
-    &:hover {
-      background: #555;
-    }
-  }
-`;
-
 // Hero Section
-const HeroSection = styled.section`
-  min-height: 80vh;
-  background: #FAFAFA;
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+const HeroSection = styled.div`
+  padding: 60px 20px;
+  text-align: center;
+  background: linear-gradient(135deg, #fff5f7 0%, #f8f9fa 100%);
 `;
 
 const HeroImage = styled.div`
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(135deg, #F5F5F5 0%, #E8E8E8 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
+  margin-bottom: 40px;
 `;
 
 const HeroPlaceholder = styled.div`
@@ -444,365 +106,410 @@ const GridDescription = styled.p`
   margin: 0 auto;
 `;
 
-const MainBanner = styled.section`
-  width: 100%;
-  min-height: auto;
-  background: linear-gradient(90deg, #ffb6c1 0%, #dda0dd 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 0 0 40px 40px;
-  box-shadow: 0 8px 32px rgba(221,160,221,0.08);
-  margin-bottom: 40px;
-`;
-const BannerContent = styled.div`
-  text-align: center;
-  color: #fff;
-`;
-const BannerTitle = styled.h1`
-  font-size: 2rem;
-  font-weight: 700;
-  margin-bottom: 18px;
-  letter-spacing: 2px;
-`;
-const BannerDesc = styled.p`
-  font-size: 0.95rem;
-  font-weight: 300;
-  margin-bottom: 24px;
-  line-height: 1.6;
-  max-width: 800px;
-  margin-left: auto;
-  margin-right: auto;
-`;
-const BannerBtn = styled.button`
-  background: #fff;
-  color: #d16ba5;
-  border: none;
-  border-radius: 24px;
-  padding: 12px 36px;
-  font-size: 1.1rem;
-  font-weight: 500;
-  cursor: pointer;
-  box-shadow: 0 2px 8px rgba(255,182,193,0.12);
-  transition: background 0.2s;
-  margin-top: -8px;
-  &:hover { background: #ffe4f0; }
+// Main Banner
+const MainBanner = styled.div`
+  background: linear-gradient(135deg, #fff5f7 0%, #f8f9fa 100%);
+  padding: 40px 20px;
+  margin: 20px 0;
+  border-radius: 20px;
+  box-shadow: 0 4px 20px rgba(221,160,221,0.1);
 `;
 
-const CategoryNav = styled.section`
+const BannerContent = styled.div`
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+`;
+
+const BannerTitle = styled.h1`
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 20px;
+  
+  @media (max-width: 768px) {
+    font-size: 2rem;
+  }
+`;
+
+const BannerDesc = styled.p`
+  font-size: 1rem;
+  line-height: 1.8;
+  margin-bottom: 30px;
+  text-align: left;
+  
+  @media (max-width: 768px) {
+    font-size: 0.9rem;
+  }
+`;
+
+const BannerBtn = styled.button`
+  background: linear-gradient(135deg, #ff6b9d 0%, #dda0dd 100%);
+  color: white;
+  border: none;
+  padding: 15px 40px;
+  border-radius: 30px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(255,107,157,0.3);
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255,107,157,0.4);
+  }
+`;
+
+// Category Navigation
+const CategoryNav = styled.div`
   display: flex;
   justify-content: center;
-  gap: 32px;
-  margin-bottom: 48px;
+  gap: 20px;
+  margin: 40px 0;
+  flex-wrap: wrap;
+  
+  @media (max-width: 768px) {
+    gap: 15px;
+  }
 `;
+
 const CategoryBtn = styled.button`
-  background: linear-gradient(135deg, #ffb6c1 60%, #dda0dd 100%);
-  color: #fff;
-  border: none;
-  border-radius: 18px;
-  padding: 18px 28px;
-  font-size: 1.1rem;
-  font-weight: 500;
-  box-shadow: 0 2px 12px rgba(221,160,221,0.10);
+  background: white;
+  border: 2px solid #f0f0f0;
+  border-radius: 15px;
+  padding: 15px 25px;
+  cursor: pointer;
+  transition: all 0.3s ease;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 8px;
-  cursor: pointer;
-  transition: background 0.2s;
-  &:hover { background: linear-gradient(135deg, #dda0dd 60%, #ffb6c1 100%); }
-`;
-const CategoryIcon = styled.span`
-  font-size: 2rem;
+  min-width: 100px;
+  
+  &:hover {
+    border-color: #ff6b9d;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(255,107,157,0.2);
+  }
 `;
 
-const SectionTitle = styled.h2`
+const CategoryIcon = styled.span`
   font-size: 1.5rem;
+`;
+
+// Product Grid
+const SectionTitle = styled.h2`
+  font-size: 2rem;
   font-weight: 700;
-  color: #d16ba5;
-  margin-bottom: 24px;
-  margin-top: 32px;
+  color: #333;
+  text-align: center;
+  margin: 40px 0 20px 0;
+  
+  @media (max-width: 768px) {
+    font-size: 1.5rem;
+  }
 `;
 
 const ProductGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 32px;
-  margin-bottom: 48px;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+  }
 `;
+
 const ProductCard = styled.div`
-  background: #fff0f6;
-  border-radius: 18px;
-  box-shadow: 0 2px 12px rgba(221,160,221,0.10);
-  padding: 32px 20px 24px 20px;
+  background: white;
+  border-radius: 15px;
+  padding: 20px;
   text-align: center;
-  transition: box-shadow 0.2s;
-  &:hover { box-shadow: 0 6px 24px rgba(221,160,221,0.18); }
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+  }
 `;
+
 const ProductEmoji = styled.div`
-  font-size: 48px;
-  margin-bottom: 18px;
+  font-size: 3rem;
+  margin-bottom: 15px;
 `;
-const ProductName = styled.div`
+
+const ProductName = styled.h3`
+  font-size: 1.1rem;
   font-weight: 600;
-  font-size: 18px;
   color: #333;
-  margin-bottom: 4px;
-  line-height: 1.3;
+  margin-bottom: 10px;
 `;
+
 const ProductPrice = styled.div`
-  color: #d16ba5;
-  font-size: 1rem;
-  margin-bottom: 18px;
-`;
-const CartButton = styled.button`
-  background: linear-gradient(90deg, #ffb6c1 0%, #dda0dd 100%);
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  padding: 10px 24px;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background 0.2s;
-  &:hover { background: #dda0dd; }
-`;
-
-const EventBanner = styled.div`
-  width: 100%;
-  background: linear-gradient(90deg, #dda0dd 0%, #ffb6c1 100%);
-  color: #fff;
-  border-radius: 24px;
-  text-align: center;
-  padding: 32px 0 28px 0;
   font-size: 1.2rem;
-  font-weight: 500;
-  margin: 48px 0 0 0;
-  box-shadow: 0 2px 12px rgba(221,160,221,0.10);
+  font-weight: 700;
+  color: #ff6b9d;
+  margin-bottom: 15px;
 `;
 
-const TrendingSection = styled.section`
-  padding: 40px 40px;
-  background: #fff;
-  margin-bottom: 0;
+const CartButton = styled.button`
+  background: linear-gradient(135deg, #ff6b9d 0%, #dda0dd 100%);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(255,107,157,0.3);
+  }
+`;
+
+// Event Banner
+const EventBanner = styled.div`
+  background: linear-gradient(135deg, #fff5f7 0%, #f8f9fa 100%);
+  padding: 30px 20px;
+  margin: 40px 0;
+  border-radius: 20px;
+  box-shadow: 0 4px 20px rgba(221,160,221,0.1);
+`;
+
+// Trending Section
+const TrendingSection = styled.div`
+  background: white;
+  padding: 40px 20px;
+  margin: 40px 0;
+  border-radius: 20px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
 `;
 
 const TrendingHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 30px;
+  
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 15px;
+  }
 `;
 
 const TrendingTitle = styled.h2`
-  font-size: 1.2rem;
+  font-size: 2rem;
   font-weight: 700;
   color: #333;
+  
+  @media (max-width: 768px) {
+    font-size: 1.5rem;
+  }
 `;
 
 const TrendingNav = styled.div`
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 0.8rem;
-  color: #666;
+  gap: 20px;
 `;
 
 const TrendingUpdate = styled.span`
-  color: #d16ba5;
-  font-weight: 500;
+  font-size: 1rem;
+  color: #666;
 `;
 
 const TrendingPagination = styled.div`
   display: flex;
-  gap: 4px;
+  gap: 10px;
 `;
 
-const PageCircle = styled.div<{ active?: boolean }>`
-  width: 18px;
-  height: 18px;
+const PageCircle = styled.div<{ active: boolean }>`
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.7rem;
-  font-weight: 500;
   cursor: pointer;
-  background: ${props => props.active ? '#d16ba5' : '#f0f0f0'};
-  color: ${props => props.active ? '#fff' : '#666'};
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  
+  background: ${props => props.active ? '#ff6b9d' : '#f0f0f0'};
+  color: ${props => props.active ? 'white' : '#666'};
+  
+  &:hover {
+    background: ${props => props.active ? '#ff6b9d' : '#e0e0e0'};
+  }
 `;
 
 const TrendingContent = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 40px;
-  max-width: 1200px;
-  margin: 0 auto;
+  gap: 30px;
+  
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
 `;
 
 const FeaturedProduct = styled.div`
-  background: #fff;
-  border-radius: 16px;
-  padding: 16px 24px 12px 24px;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
-  position: relative;
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 15px;
 `;
 
 const ProductImageContainer = styled.div`
   position: relative;
-  margin-bottom: 6px;
+  margin-bottom: 15px;
 `;
 
 const FeaturedProductImage = styled.img`
   width: 100%;
-  height: 400px;
+  height: 300px;
   object-fit: cover;
-  border-radius: 8px;
-  margin-bottom: 16px;
+  border-radius: 10px;
 `;
 
 const AwardBadge = styled.div`
   position: absolute;
-  right: 12px;
-  top: 12px;
-  background: #28a745;
-  color: #fff;
-  padding: 3px 8px;
-  border-radius: 4px;
-  font-size: 0.6rem;
+  top: 10px;
+  right: 10px;
+  background: #4CAF50;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 15px;
+  font-size: 0.8rem;
   font-weight: 600;
-  text-align: center;
-  line-height: 1.2;
 `;
 
 const ViewCount = styled.div`
   display: flex;
   align-items: center;
-  gap: 4px;
-  font-size: 0.7rem;
+  gap: 5px;
+  font-size: 0.9rem;
   color: #666;
-  margin-bottom: 4px;
+  margin-bottom: 10px;
 `;
 
 const BrandName = styled.div`
-  font-size: 0.75rem;
-  color: #888;
-  margin-bottom: 2px;
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 5px;
 `;
 
-const FeaturedProductName = styled.div`
-  font-size: 0.95rem;
+const FeaturedProductName = styled.h3`
+  font-size: 1.1rem;
   font-weight: 600;
   color: #333;
-  margin-bottom: 6px;
-  line-height: 1.3;
+  margin-bottom: 10px;
 `;
 
 const PriceContainer = styled.div`
-  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
 `;
 
-const OriginalPrice = styled.div`
-  font-size: 0.7rem;
+const OriginalPrice = styled.span`
+  font-size: 0.9rem;
   color: #999;
   text-decoration: line-through;
-  margin-bottom: 2px;
 `;
 
-const DiscountPrice = styled.div`
-  font-size: 1rem;
+const DiscountPrice = styled.span`
+  font-size: 1.1rem;
   font-weight: 700;
-  color: #28a745;
+  color: #4CAF50;
 `;
 
 const ProductTags = styled.div`
   display: flex;
-  gap: 4px;
+  gap: 5px;
   flex-wrap: wrap;
 `;
 
 const Tag = styled.span<{ color: string }>`
   background: ${props => props.color};
-  color: #fff;
-  padding: 2px 6px;
-  border-radius: 8px;
-  font-size: 0.6rem;
-  font-weight: 500;
+  color: white;
+  padding: 3px 8px;
+  border-radius: 10px;
+  font-size: 0.7rem;
+  font-weight: 600;
 `;
 
 const TrendingList = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 15px;
 `;
 
-const TrendingItem = styled.div<{ active?: boolean }>`
-  padding: 6px 8px;
-  border-radius: 12px;
+const TrendingItem = styled.div<{ active: boolean }>`
+  background: ${props => props.active ? '#fff5f7' : 'white'};
+  border: 2px solid ${props => props.active ? '#ff6b9d' : '#f0f0f0'};
+  border-radius: 10px;
+  padding: 15px;
   cursor: pointer;
-  transition: all 0.2s;
-  border: ${props => props.active ? '2px solid #d16ba5' : '1px solid #f0f0f0'};
-  background: ${props => props.active ? '#fff5f7' : '#fff'};
+  transition: all 0.3s ease;
   
   &:hover {
-    border-color: #d16ba5;
-    background: #fff5f7;
+    border-color: #ff6b9d;
+    transform: translateY(-2px);
   }
 `;
 
 const TrendingItemHeader = styled.div`
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 2px;
+  gap: 10px;
+  margin-bottom: 5px;
 `;
 
-const TrendingRank = styled.div`
-  width: 14px;
-  height: 14px;
-  background: #d16ba5;
-  color: #fff;
+const TrendingRank = styled.span`
+  background: #ff6b9d;
+  color: white;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.55rem;
+  font-size: 0.8rem;
   font-weight: 600;
 `;
 
-const TrendingItemName = styled.div`
-  font-size: 0.7rem;
-  font-weight: 500;
+const TrendingItemName = styled.h4`
+  font-size: 1rem;
+  font-weight: 600;
   color: #333;
-  line-height: 1.2;
+  margin: 0;
 `;
 
-
-
+// Sample Products Data
 const sampleProducts = [
-  { id: 1, name: '화이트 꽃병', price: 45000, emoji: '🏺' },
-  { id: 2, name: '세라믹 머그컵', price: 28000, emoji: '☕' },
-  { id: 3, name: '화이트 꽃', price: 32000, emoji: '🌸' },
-  { id: 4, name: '화이트 그릇', price: 35000, emoji: '🍽️' },
-  { id: 5, name: '테이블웨어', price: 39000, emoji: '☕' },
+  { id: 1, name: "화이트 꽃병", price: 45000, emoji: "🏺" },
+  { id: 2, name: "세라믹 머그컵", price: 28000, emoji: "☕" },
+  { id: 3, name: "화이트 꽃", price: 32000, emoji: "🌸" },
+  { id: 4, name: "라벤더 디퓨저", price: 38000, emoji: "🌿" },
+  { id: 5, name: "핑크 쿠션", price: 25000, emoji: "🛋️" },
+  { id: 6, name: "아로마 캔들", price: 22000, emoji: "🕯️" }
 ];
 
 const Hero: React.FC = () => {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [isCartOpen, setIsCartOpen] = useState(false);
-  const [isLoginOpen, setIsLoginOpen] = useState(false);
-  const [isJoinOpen, setIsJoinOpen] = useState(false);
-  const [isMyPageOpen, setIsMyPageOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [searchResults, setSearchResults] = useState<typeof sampleProducts>([]);
-  const [searchPerformed, setSearchPerformed] = useState(false);
-  const navigate = useNavigate();
-  const [searchBarValue, setSearchBarValue] = useState('');
-  const [searchBarFocus, setSearchBarFocus] = useState(false);
   const [currentTrendingPage, setCurrentTrendingPage] = useState(1);
   const [isHovering, setIsHovering] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
-  const recentKeywords: string[] = [];
+  const navigate = useNavigate();
   const trendingKeywords = [
     { word: '핑크쿠션', up: true },
     { word: '라벤더크림', up: false, new: true },
@@ -990,41 +697,9 @@ const Hero: React.FC = () => {
     setSelectedProduct(products[0]);
   }, [currentTrendingPage]);
 
-  const handleSearch = () => {
-    if (searchQuery.trim()) {
-      const results = sampleProducts.filter(p => p.name.includes(searchQuery.trim()));
-      setSearchResults(results);
-      setSearchPerformed(true);
-    }
-  };
-
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
-      handleSearch();
-    }
-  };
-
-  const handleGridItemClick = (category: string) => {
-    if (category === 'NEW ARRIVAL') {
-      navigate('/new-arrival');
-    } else {
-      alert(`${category} 카테고리로 이동합니다.`);
-    }
-  };
-
-  const handleTopBarClick = (action: string) => {
-    alert(`${action} 기능을 실행합니다.`);
-  };
-
-  const handleNavClick = (page: string) => {
-    alert(`${page} 페이지로 이동합니다.`);
-  };
-
   const handleTrendingPageChange = (page: number) => {
     setCurrentTrendingPage(page);
-    // 페이지가 바뀌면 첫 번째 아이템을 선택
-    const products = allTrendingProducts[page - 1];
-    setSelectedProduct(products[0]);
+    setSelectedProduct(null);
   };
 
   const handleProductClick = (product: any) => {
@@ -1033,117 +708,6 @@ const Hero: React.FC = () => {
 
   return (
     <MainContainer>
-      {/* Navigation */}
-      <Navigation>
-        <NavLinks>
-          <NavLink onClick={() => handleNavClick('ABOUT')}>ABOUT</NavLink>
-          <NavLink onClick={() => handleNavClick('SHOP')}>SHOP</NavLink>
-          <NavLink onClick={() => handleNavClick('LOOKBOOK')}>LOOKBOOK</NavLink>
-          <NavLink onClick={() => handleNavClick('Q&A')}>Q&A</NavLink>
-          <NavLink onClick={() => handleNavClick('CONTACT')}>CONTACT</NavLink>
-          <NavLink onClick={() => handleNavClick('REVIEW')}>REVIEW</NavLink>
-          <NavIcon onClick={() => setIsCartOpen(true)}>
-            <FaShoppingCart />
-          </NavIcon>
-          <NavIcon onClick={() => setIsSearchOpen(true)}>
-            <FaSearch />
-          </NavIcon>
-        </NavLinks>
-        <BrandIcon>
-          <FaSeedling />
-        </BrandIcon>
-        <MobileMenuButton onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
-          {isMobileMenuOpen ? <FaTimes /> : <FaBars />}
-        </MobileMenuButton>
-      </Navigation>
-
-      {/* Mobile Menu */}
-      <MobileMenu isOpen={isMobileMenuOpen}>
-        <MobileNavLinks>
-          <MobileNavLink onClick={() => { handleNavClick('ABOUT'); setIsMobileMenuOpen(false); }}>ABOUT</MobileNavLink>
-          <MobileNavLink onClick={() => { handleNavClick('SHOP'); setIsMobileMenuOpen(false); }}>SHOP</MobileNavLink>
-          <MobileNavLink onClick={() => { handleNavClick('LOOKBOOK'); setIsMobileMenuOpen(false); }}>LOOKBOOK</MobileNavLink>
-          <MobileNavLink onClick={() => { handleNavClick('Q&A'); setIsMobileMenuOpen(false); }}>Q&A</MobileNavLink>
-          <MobileNavLink onClick={() => { handleNavClick('CONTACT'); setIsMobileMenuOpen(false); }}>CONTACT</MobileNavLink>
-          <MobileNavLink onClick={() => { handleNavClick('REVIEW'); setIsMobileMenuOpen(false); }}>REVIEW</MobileNavLink>
-        </MobileNavLinks>
-      </MobileMenu>
-
-      {/* Search Modal */}
-      <SearchModal isOpen={isSearchOpen}>
-        <SearchModalContent>
-          <SearchModalClose onClick={() => { setIsSearchOpen(false); setSearchPerformed(false); setSearchResults([]); setSearchQuery(''); }}>×</SearchModalClose>
-          <h2 style={{ marginBottom: '20px', color: '#333' }}>상품 검색</h2>
-          <SearchInput
-            type="text"
-            placeholder="찾고 계신 상품을 검색해보세요..."
-            value={searchQuery}
-            onChange={(e) => { setSearchQuery(e.target.value); setSearchPerformed(false); }}
-            onKeyPress={handleKeyPress}
-          />
-          <button
-            onClick={handleSearch}
-            style={{
-              marginTop: '15px',
-              background: '#333',
-              color: 'white',
-              border: 'none',
-              padding: '10px 20px',
-              borderRadius: '5px',
-              cursor: 'pointer'
-            }}
-          >
-            검색하기
-          </button>
-          {/* 검색 결과 */}
-          {searchPerformed && (
-            <div style={{ marginTop: 30 }}>
-              {searchResults.length > 0 ? (
-                searchResults.map(item => (
-                  <div key={item.id} style={{ display: 'flex', alignItems: 'center', gap: 16, padding: '12px 0', borderBottom: '1px solid #eee' }}>
-                    <span style={{ fontSize: 32 }}>{item.emoji}</span>
-                    <div style={{ flex: 1 }}>
-                      <div style={{ fontWeight: 500 }}>{item.name}</div>
-                      <div style={{ color: '#888', fontSize: 14 }}>₩{item.price.toLocaleString()}</div>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <div style={{ color: '#888', marginTop: 20 }}>검색 결과가 없습니다.</div>
-              )}
-            </div>
-          )}
-        </SearchModalContent>
-      </SearchModal>
-
-      {/* Cart Modal */}
-      <CartModal isOpen={isCartOpen}>
-        <CartModalContent>
-          <CartModalClose onClick={() => setIsCartOpen(false)}>×</CartModalClose>
-          <h2 style={{ marginBottom: '20px', color: '#333' }}>장바구니</h2>
-          <CartItem>
-            <CartItemImage>🏺</CartItemImage>
-            <CartItemInfo>
-              <h4>화이트 꽃병</h4>
-              <p>₩45,000</p>
-            </CartItemInfo>
-          </CartItem>
-          <CartItem>
-            <CartItemImage>☕</CartItemImage>
-            <CartItemInfo>
-              <h4>세라믹 머그컵</h4>
-              <p>₩28,000</p>
-            </CartItemInfo>
-          </CartItem>
-          <CartTotal>
-            <h3>총 금액: ₩73,000</h3>
-            <button onClick={() => { alert('주문 페이지로 이동합니다.'); setIsCartOpen(false); }}>
-              주문하기
-            </button>
-          </CartTotal>
-        </CartModalContent>
-      </CartModal>
-
       {/* Hero Section */}
       <HeroSection>
         <HeroImage>
@@ -1233,7 +797,7 @@ const Hero: React.FC = () => {
             marginLeft:'12px',
             whiteSpace:'nowrap'
           }}
-          onClick={()=>setIsJoinOpen(true)}
+          onClick={()=>navigate('/register')}
         >회원가입</button>
       </EventBanner>
 
@@ -1302,37 +866,6 @@ const Hero: React.FC = () => {
           </TrendingList>
         </TrendingContent>
       </TrendingSection>
-
-      {/* 로그인 모달 */}
-      <SearchModal isOpen={isLoginOpen}>
-        <SearchModalContent>
-          <SearchModalClose onClick={() => setIsLoginOpen(false)}>×</SearchModalClose>
-          <h2 style={{ marginBottom: '20px', color: '#333' }}>로그인</h2>
-          <input type="text" placeholder="아이디" style={{width:'100%',marginBottom:10,padding:10}} />
-          <input type="password" placeholder="비밀번호" style={{width:'100%',marginBottom:20,padding:10}} />
-          <button style={{width:'100%',background:'#333',color:'#fff',padding:10,border:'none',borderRadius:5}}>로그인</button>
-        </SearchModalContent>
-      </SearchModal>
-      {/* 회원가입 모달 */}
-      <SearchModal isOpen={isJoinOpen}>
-        <SearchModalContent>
-          <SearchModalClose onClick={() => setIsJoinOpen(false)}>×</SearchModalClose>
-          <h2 style={{ marginBottom: '20px', color: '#333' }}>회원가입</h2>
-          <input type="text" placeholder="아이디" style={{width:'100%',marginBottom:10,padding:10}} />
-          <input type="password" placeholder="비밀번호" style={{width:'100%',marginBottom:10,padding:10}} />
-          <input type="text" placeholder="이메일" style={{width:'100%',marginBottom:20,padding:10}} />
-          <button style={{width:'100%',background:'#333',color:'#fff',padding:10,border:'none',borderRadius:5}}>회원가입</button>
-        </SearchModalContent>
-      </SearchModal>
-      {/* 마이페이지 모달 */}
-      <SearchModal isOpen={isMyPageOpen}>
-        <SearchModalContent>
-          <SearchModalClose onClick={() => setIsMyPageOpen(false)}>×</SearchModalClose>
-          <h2 style={{ marginBottom: '20px', color: '#333' }}>마이페이지</h2>
-          <div style={{marginBottom:20}}>마이페이지 기능은 준비중입니다.</div>
-          <button style={{width:'100%',background:'#333',color:'#fff',padding:10,border:'none',borderRadius:5}} onClick={()=>setIsMyPageOpen(false)}>닫기</button>
-        </SearchModalContent>
-      </SearchModal>
     </MainContainer>
   );
 };
